@@ -42,3 +42,24 @@ export const getUserFriends = async (req: Request, res: Response) => {
         res.status(400).json({ message: "Error in controllers/users.ts, could not find getUserFriends" });
     }
 }
+export const addRemoveFriends = async (req: Request, res: Response) => {
+    try {
+        const { id, friendId } = req.params;
+        const user = await User.findById(id);
+        const friend = await User.findById(friendId);
+        if(!user) return res.status(404).json({ message: "User not found" });
+        if(!friend) return res.status(404).json({ message: "Friend not found" });
+        if (user.friends.includes(friendId)) {
+            user.friends = user.friends.filter((id) => id !== friendId);
+            friend.friends = friend?.friends?.filter((id) => id !== id);
+        }
+        else {
+            user.friends.push(friendId);
+            friend.friends.push(id);
+        }
+        await user.save();
+        await friend.save();
+    } catch (error) {
+        res.status(400).json({ message: "Error in controllers/users.ts, could not find addRemoveFriends"})
+    }
+}
