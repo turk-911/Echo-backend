@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Friend } from "../types";
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
