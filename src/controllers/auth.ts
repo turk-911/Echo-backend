@@ -35,6 +35,8 @@ export const login = async (req: Request, res: Response) => {
         const verdict = await bcrypt.compare(password, user.password);
         if(!verdict) return res.status(400).json({ message: 'Credentials are not valid '});
         const token = jwt.sign({ id: user._id }, secret as string);
+        (user as any).password = undefined;
+        res.status(200).json({ token, user });
     } catch (error) {
         res.status(500).json({ error: 'Some error occured in auth.ts, in login route '});
     }
